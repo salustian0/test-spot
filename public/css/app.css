@@ -1,0 +1,18 @@
+.actions{
+    border-radius: 50%;
+    height: 38px;
+    width: 38px;
+}
+
+.loading{
+    z-index: 99999;
+    position: absolute;
+    left: 0;
+    top:0;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
