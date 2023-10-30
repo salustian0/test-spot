@@ -67,7 +67,12 @@
                     <tr class="text-center">
                         <th class="align-middle" scope="row" class="">{{$item->id}}</th>
                         <td class="align-middle">{{$item->name}}</td>
-                        <td>{{$item->status == true ? 'Ativo' : 'Inativo'}}</td>
+                        <td>
+                            @if($item->status == true)
+                                <i class="text-success fa-solid fa-circle-check"></i>
+                            @else
+                                <i class="text-danger fa-solid fa-circle-xmark"></i>
+                           @endif
                         <td class="align-middle">{{$item->parsedDate}}</td>
                         <td class="d-flex justify-content-end gap-3">
                             <a class="text-dark text-decoration-none" href="{{url('/category', $item->id)}}">

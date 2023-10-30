@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-    <div class="col-4 m-auto mt-3">
+    <div class="col-6 m-auto mt-3">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Dados da categoria</h5>
@@ -19,16 +19,20 @@
 
             <ul class="list-group list-group-flush">
                 <li class="list-group-item py-3">
-                    Nome: {{$item->name}}
+                    <label class="fs-6 fw-bold">Nome:</label> <span>{{$item->name}}</span>
                 </li>
                 <li class="list-group-item py-3">
-                    Descricao: {{$item->description}}
+                    <label class="fs-6 fw-bold">Descricao:</label> <span>{{$item->description}}</span>
                 </li>
                 <li class="list-group-item py-3">
-                    Status: {{$item->status == true ? 'Ativo' : 'Inativo'}}
-                </li>
+                    <label class="fs-6 fw-bold">Status:</label>
+                    @if($item->status == true)
+                        <i class="text-success fa-solid fa-circle-check"></i> Ativo
+                    @else
+                        <i class="text-danger fa-solid fa-circle-xmark"></i> Inativo
+                    @endif                </li>
                 <li class="list-group-item py-3">
-                    Data de cadastro: {{$item->created_at}}
+                    <label class="fs-6 fw-bold">Data de cadastro:</label> <span>{{$item->created_at}}</span>
                 </li>
                 <li class="list-group-item py-3">
                     <a href="/category" class="btn btn-primary">Voltar para a listagem</a>
