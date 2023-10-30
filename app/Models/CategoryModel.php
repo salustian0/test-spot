@@ -14,4 +14,9 @@ class CategoryModel extends Model
     protected $table = 'Category';
     protected $fillable = ["id", "name", "description", "status"];
     public $timestamps = true;
+
+    public function products()
+    {
+        return $this->hasMany(ProductModel::class, 'category_id');
+    }
 }
