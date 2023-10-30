@@ -6,6 +6,7 @@ use App\Models\CategoryModel;
 use App\Repositories\CategoryRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\ValidationException;
 
@@ -47,7 +48,7 @@ class CategoryService implements ICategoryService
             throw new NotFoundHttpException('category not found');
         }
 
-        $validator = $this->validateUpdate($category);
+        $validator = $this->validateUpdate($category, $id);
         if($validator->fails()){
             throw new ValidationException($validator);
         }
@@ -73,6 +74,11 @@ class CategoryService implements ICategoryService
     public function Delete(int $id): bool
     {
         $category =  $this->categoryRepository->GetById($id);
+
+        if(isset($category->products) && count($category->products)){
+            throw new \Exception("Nao e possivel deletar essa categoria, pois ja existem vinculos");
+        }
+
         if(!$category){
             throw new NotFoundHttpException("categoria inexistente");
         }
@@ -83,32 +89,37 @@ class CategoryService implements ICategoryService
     private function validateCreate(array $data) : \Illuminate\Validation\Validator{
 
         $rules = [
-            'name' => 'required|string|max:255',
+            'name' => ['required','string','max:255', Rule::unique(CategoryModel::class, 'name')],
             'description'=>  'max:255',
-            'status' => 'boolean|required'
+            'status' => 'boolean|required',
+
         ];
 
         $messages = [
             'name.required' => 'O campo nome é obrigatório' ,
-            'name.max' => 'O campo deve ter no maximo :max caracteres',
+            'name.max' => 'O campo nome deve ter no maximo :max caracteres',
+            'name.unique' => 'Já existe uma categoria com esse nome',
+            'description.max' => 'O campo descricao deve ter no maximo :max caracteres',
             'status.boolean' => 'O campo status precisa ser boleano'
         ];
 
         return Validator::make($data, $rules, $messages);
     }
 
-    private function validateUpdate(array $data) : \Illuminate\Validation\Validator {
+    private function validateUpdate(array $data, int $id) : \Illuminate\Validation\Validator {
 
         $rules = [];
 
         $messages = [
             'name.required' => 'O campo nome é obrigatório' ,
-            'name.max' => 'O campo deve ter no maximo :max caracteres',
-            'status.boolean' => 'O campo status precisa ser boleano'
+            'name.max' => 'O campo nome deve ter no maximo :max caracteres',
+            'status.boolean' => 'O campo status precisa ser boleano',
+            'name.unique' => 'Já existe uma categoria com esse nome',
+            'description.max' => 'O campo descricao deve ter no maximo :max caracteres',
         ];
 
         if(array_key_exists('name', $data)){
-            $rules['name']  =  'required|string|max:255';
+            $rules['name']  =  ['required','string', 'max:255',  Rule::unique(CategoryModel::class, 'name')->ignore($id)];
         }
 
         if(array_key_exists('description', $data)){
@@ -121,5 +132,10 @@ class CategoryService implements ICategoryService
         }
 
         return Validator::make($data, $rules, $messages);
+    }
+
+    public function GetAllActive(): LengthAwarePaginator
+    {
+        return $this->categoryRepository->GetAllActive();
     }
 }

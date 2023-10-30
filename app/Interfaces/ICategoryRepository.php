@@ -10,6 +10,8 @@ interface ICategoryRepository
     public function Create(array $category): CategoryModel;
     public function Update(CategoryModel $category, array $data): CategoryModel;
     public function GetAll(): LengthAwarePaginator;
+    public function GetAllActive(): LengthAwarePaginator;
     public function GetById(int $id): ?CategoryModel;
     public function Delete(int $id): bool;
+
 }

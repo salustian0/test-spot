@@ -26,6 +26,11 @@ class CategoryRepository implements ICategoryRepository
         return CategoryModel::paginate(TestSpotAppConsts::DEFAULT_PER_PAGE);
     }
 
+    public function GetAllActive() : LengthAwarePaginator{
+        return CategoryModel::where(['status' => true])
+            ->paginate(TestSpotAppConsts::DEFAULT_PER_PAGE);
+    }
+
     public function GetById(int $id): ?CategoryModel
     {
         return CategoryModel::find($id);

@@ -16,6 +16,8 @@ interface ICategoryService
 
     public function GetAll(): LengthAwarePaginator;
 
+    public function GetAllActive(): LengthAwarePaginator;
+
     public function GetById(int $id): ?CategoryModel;
 
     public function Delete(int $id): bool;
